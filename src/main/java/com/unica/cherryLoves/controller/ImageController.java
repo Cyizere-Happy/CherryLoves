@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -37,12 +38,24 @@ public class ImageController {
 
     @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
-        Image image = imageService.getImageById(imageId);
-        ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                .body(resource);
+        try {
+            Image image = imageService.getImageById(imageId);
+
+            ByteArrayResource resource = new ByteArrayResource(
+                    image.getImage().getBytes(1, (int) image.getImage().length())
+            );
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(image.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + image.getFileName() + "\"")
+                    .body(resource);
+
+        } catch (SQLException e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @PutMapping("/images/{imageId}/update")
     public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file) {
