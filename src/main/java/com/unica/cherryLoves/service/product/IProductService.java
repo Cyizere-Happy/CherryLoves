@@ -1,5 +1,6 @@
 package com.unica.cherryLoves.service.product;
 
+import com.unica.cherryLoves.dto.ProductDto;
 import com.unica.cherryLoves.models.Product;
 import com.unica.cherryLoves.request.AddProductRequest;
 import com.unica.cherryLoves.request.ProductUpdateRequest;
@@ -19,5 +20,7 @@ public interface IProductService {
     List<Product> getProductsByName(String name);
     List<Product> getProductsByBrandAndName(String category, String name);
     Long countProductsByBrandAndName(String brand, String name);
+    ProductDto convertToDto(Product product);
+    List<ProductDto> getConvertedProducts(List<Product> products);
 
 }

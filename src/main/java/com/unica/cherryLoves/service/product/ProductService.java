@@ -1,13 +1,18 @@
 package com.unica.cherryLoves.service.product;
 
+import com.unica.cherryLoves.dto.ImageDto;
+import com.unica.cherryLoves.dto.ProductDto;
 import com.unica.cherryLoves.exceptions.ProductNotFoundException;
 import com.unica.cherryLoves.models.Category;
+import com.unica.cherryLoves.models.Image;
 import com.unica.cherryLoves.models.Product;
 import com.unica.cherryLoves.repository.CategoryRepository;
+import com.unica.cherryLoves.repository.ImageRepository;
 import com.unica.cherryLoves.repository.ProductRepository;
 import com.unica.cherryLoves.request.AddProductRequest;
 import com.unica.cherryLoves.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +24,8 @@ import java.util.Optional;
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageRepository imageRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -114,5 +121,19 @@ public class ProductService implements IProductService{
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products){
+        return products.stream().map(this::convertToDto).toList();
+    }
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
