@@ -5,10 +5,12 @@ import com.unica.cherryLoves.models.Cart;
 import com.unica.cherryLoves.models.CartItem;
 import com.unica.cherryLoves.repository.CartItemRepository;
 import com.unica.cherryLoves.repository.CartRepository;
+import com.unica.cherryLoves.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
