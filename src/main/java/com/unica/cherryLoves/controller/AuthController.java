@@ -45,7 +45,7 @@ public class AuthController {
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt, userDetails.getEmail(), roles);
             return ResponseEntity.ok(new ApiResponse("Login Success!", jwtResponse));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("Invalid email or password", null));
         }
     }
 

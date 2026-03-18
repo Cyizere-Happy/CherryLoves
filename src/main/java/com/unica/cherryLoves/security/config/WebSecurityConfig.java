@@ -62,8 +62,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/products/**").permitAll()
                         .requestMatchers("/api/v1/categories/**").permitAll()
                         .requestMatchers("/api/v1/images/**").permitAll()
-                        .requestMatchers("/api/v1/carts/**").permitAll()
-                        .requestMatchers("/api/v1/cartItems/**").permitAll()
+                        .requestMatchers("/api/v1/carts/**").authenticated()
+                        .requestMatchers("/api/v1/cartItems/**").authenticated()
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

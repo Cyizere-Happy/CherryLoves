@@ -19,6 +19,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserController {
     private final IUserService userService;
 
+    @PreAuthorize("hasRole('ROLE_USER') and #userId == authentication.principal.id or hasRole('ROLE_ADMIN')")
     @GetMapping("/{userId}/user")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {

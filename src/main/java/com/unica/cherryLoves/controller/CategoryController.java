@@ -30,7 +30,7 @@ public class CategoryController {
                     .toList();
             return ResponseEntity.ok(new ApiResponse("Found!", categoryDtos));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error: ", INTERNAL_SERVER_ERROR));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error retrieving categories", null));
         }
     }
 

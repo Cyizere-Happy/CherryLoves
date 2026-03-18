@@ -52,7 +52,7 @@ public class ProductController {
             ProductDto convertedProduct = productService.convertToDto(theProduct);
             return ResponseEntity.ok(new ApiResponse("Add Product Success!", convertedProduct));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error adding product", null));
         }
     }
 
@@ -89,7 +89,7 @@ public class ProductController {
             }
             return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error during product search", null));
         }
     }
 
@@ -103,12 +103,12 @@ public class ProductController {
             }
             return ResponseEntity.ok(new ApiResponse("Success", convertedProducts));
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error during product search", null));
         }
     }
 
-    @GetMapping("/product/{name}/product")
-    public ResponseEntity<ApiResponse> getProductById(@PathVariable String name){
+    @GetMapping("/by/name/{name}")
+    public ResponseEntity<ApiResponse> getProductsByName(@PathVariable String name){
         try {
             List<Product> product = productService.getProductsByName(name);
             List<ProductDto> convertedProducts = productService.getConvertedProducts(product);
@@ -121,7 +121,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/{brand}/product")
+    @GetMapping("/by/brand/{brand}")
     public ResponseEntity<ApiResponse> getProductsByBrand(@PathVariable String brand){
         try {
             List<Product> product = productService.getProductsByName(brand);
@@ -135,8 +135,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/product/{category}/all/products")
-    public ResponseEntity<ApiResponse> finalProductCategory(@PathVariable String category){
+    @GetMapping("/by/category/{category}")
+    public ResponseEntity<ApiResponse> getProductsByCategory(@PathVariable String category){
         try {
             List<Product> product = productService.getProductsByName(category);
             List<ProductDto> convertedProducts = productService.getConvertedProducts(product);
@@ -155,7 +155,7 @@ public class ProductController {
             var productCount = productService.countProductsByBrandAndName(brand, name);
             return ResponseEntity.ok(new ApiResponse("Product count!", productCount));
         } catch (Exception e) {
-            return ResponseEntity.ok(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error counting products", null));
         }
     }
 
