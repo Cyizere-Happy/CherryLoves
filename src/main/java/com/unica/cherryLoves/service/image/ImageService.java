@@ -42,15 +42,16 @@ public class ImageService implements IImageService {
 
         for (MultipartFile file : files){
             try{
+                validateFile(file);
+                String sanitizedFileName = sanitizeFileName(file.getOriginalFilename());
+
                 Image image = new Image();
-                image.setFileName(file.getOriginalFilename());
+                image.setFileName(sanitizedFileName);
                 image.setFileType(file.getContentType());
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
-                String buildDownloadUrl = "/api/v1/images/image/download";
-                String downloadUrl = buildDownloadUrl + image.getId();
-                image.setDownloadUrl(downloadUrl);
+                String buildDownloadUrl = "/api/v1/images/image/download/";
                 Image savedImage = imageReposirtory.save(image);
 
                 savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
@@ -74,12 +75,29 @@ public class ImageService implements IImageService {
     public void updateImage(MultipartFile file, Long imageId) {
         Image image = getImageById(imageId);
         try {
-            image.setFileName(file.getOriginalFilename());
-            image.setFileName(file.getOriginalFilename());
+            validateFile(file);
+            String sanitizedFileName = sanitizeFileName(file.getOriginalFilename());
+            image.setFileName(sanitizedFileName);
             image.setImage(new SerialBlob(file.getBytes()));
             imageReposirtory.save(image);
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private void validateFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        if (contentType == null || !isValidImageType(contentType)) {
+            throw new IllegalArgumentException("Invalid file type: " + contentType);
+        }
+    }
+
+    private boolean isValidImageType(String contentType) {
+        return List.of("image/jpeg", "image/png", "image/gif", "image/webp").contains(contentType);
+    }
+
+    private String sanitizeFileName(String fileName) {
+        if (fileName == null) return "image";
+        return fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
     }
 }
