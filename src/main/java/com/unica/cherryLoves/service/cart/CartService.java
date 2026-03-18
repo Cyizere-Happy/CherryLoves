@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class CartService implements ICartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-
+    private final UserRepository userRepository;
 
     @Override
     public Cart getCart(Long id) {
@@ -38,5 +38,20 @@ public class CartService implements ICartService{
     public BigDecimal getTotalPrice(Long id) {
         Cart cart = getCart(id);
         return cart.getTotalAmount();
+    }
+
+    @Override
+    public Cart initializeNewCart(com.unica.cherryLoves.models.User user) {
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+                .orElseGet(() -> {
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
+    }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
     }
 }
