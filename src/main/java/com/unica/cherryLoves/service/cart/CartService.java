@@ -1,5 +1,6 @@
 package com.unica.cherryLoves.service.cart;
 
+import com.unica.cherryLoves.dto.CartDto;
 import com.unica.cherryLoves.exceptions.ResourceNotFoundException;
 import com.unica.cherryLoves.models.Cart;
 import com.unica.cherryLoves.models.CartItem;
@@ -7,6 +8,7 @@ import com.unica.cherryLoves.repository.CartItemRepository;
 import com.unica.cherryLoves.repository.CartRepository;
 import com.unica.cherryLoves.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,6 +20,7 @@ public class CartService implements ICartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Cart getCart(Long id) {
@@ -55,5 +58,10 @@ public class CartService implements ICartService{
     @Override
     public Cart getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
+    }
+
+    @Override
+    public CartDto convertToDto(Cart cart) {
+        return modelMapper.map(cart, CartDto.class);
     }
 }

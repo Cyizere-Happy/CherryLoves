@@ -5,6 +5,7 @@ import com.unica.cherryLoves.exceptions.ResourceNotFoundException;
 import com.unica.cherryLoves.models.Category;
 import com.unica.cherryLoves.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +16,10 @@ import java.util.Optional;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public Category getCategoryById(long id) {
+    public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found!"));
     }
@@ -55,5 +57,10 @@ public class CategoryService implements ICategoryService {
                 .ifPresentOrElse(categoryRepository::delete, ()->{
                     throw new ResourceNotFoundException("Category not Found");
                 });
+    }
+
+    @Override
+    public com.unica.cherryLoves.dto.CategoryDto convertToDto(Category category) {
+        return modelMapper.map(category, com.unica.cherryLoves.dto.CategoryDto.class);
     }
 }
