@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 
-public class Product {
+public class Product extends AbstractAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
